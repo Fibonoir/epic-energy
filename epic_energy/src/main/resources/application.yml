@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/epic_energy
+    username: ${DB_NAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+  sql:
+    init:
+      mode: always
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: your_email@example.com
+    password: your_password
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+server:
+  port: 8080
+app:
+  jwtSecret: ${JWT_SECRET}
+  jwtExpirationMs: 604800000 # 1 week in milliseconds
+logging:
+  level:
+    org:
+      springframework: INFO
