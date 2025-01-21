@@ -1,9 +1,11 @@
 package it.epicode.epic_energy.service;
 
+import it.epicode.epic_energy.dto.ClientDtos;
 import it.epicode.epic_energy.exceptions.ResourceNotFoundException;
 import it.epicode.epic_energy.models.Client;
 import it.epicode.epic_energy.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,9 @@ public class ClientService {
         return clientRepository.findAll(pageable);
     }
 
-    public Client createClient(Client client) {
-        // Additional business logic or validations here
+    public Client createClient(ClientDtos clientDtos) {
+        Client client = new Client();
+        BeanUtils.copyProperties(clientDtos, client);
         return clientRepository.save(client);
     }
 

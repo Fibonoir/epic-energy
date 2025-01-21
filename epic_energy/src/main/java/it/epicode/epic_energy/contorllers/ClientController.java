@@ -1,5 +1,6 @@
 package it.epicode.epic_energy.contorllers;
 
+import it.epicode.epic_energy.dto.ClientDtos;
 import it.epicode.epic_energy.models.Client;
 import it.epicode.epic_energy.service.ClientService;
 import jakarta.validation.Valid;
@@ -40,8 +41,8 @@ public class ClientController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Client> createClient(@Valid @RequestBody Client client) {
-        Client savedClient = clientService.createClient(client);
+    public ResponseEntity<Client> createClient(@Valid @RequestBody ClientDtos clientDtos) {
+        Client savedClient = clientService.createClient(clientDtos);
         return ResponseEntity.ok(savedClient);
     }
 
