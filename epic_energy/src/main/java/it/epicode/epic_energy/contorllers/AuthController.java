@@ -34,21 +34,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthDtos.JwtResponse> authenticateUser(@RequestBody AuthDtos.LoginRequest loginRequest) {
-/*        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(loginRequest.getUsername());
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        return ResponseEntity.ok(new AuthDtos.JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getAuthorities()));
-
- */      String token = userService.authenticateUser(
+       String token = userService.authenticateUser(
             loginRequest.getUsername(),
             loginRequest.getPassword()
         );
