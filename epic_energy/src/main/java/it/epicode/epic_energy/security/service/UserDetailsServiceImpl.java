@@ -31,14 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .map(Role::getName)
                         .map(Enum::name)
                         .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toSet())
         );
-    }
-
-    public String getAuthorities(User user) {
-        return user.getRoles().stream()
-                .map(Role::getName)
-                .map(Enum::name)
-                .collect(Collectors.joining(","));
     }
 }

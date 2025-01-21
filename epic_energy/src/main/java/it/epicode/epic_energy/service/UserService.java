@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,6 +29,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     public User registerUser(String username, String email, String rawPassword, String role, String adminKey) {
 
@@ -62,7 +64,9 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
-
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
     public String authenticateUser(String username, String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -70,7 +74,7 @@ public class UserService {
             );
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            return new JwtUtils().generateJwtToken(userDetails.getUsername());
+            return jwtUtils.generateJwtToken(userDetails);
         } catch (AuthenticationException e) {
             throw new SecurityException("Credenziali non valide", e);
         }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -32,8 +33,8 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody AuthDtos.LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
+    public ResponseEntity<AuthDtos.JwtResponse> authenticateUser(@RequestBody AuthDtos.LoginRequest loginRequest) {
+/*        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -46,10 +47,16 @@ public class AuthController {
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 userDetails.getAuthorities()));
+
+ */      String token = userService.authenticateUser(
+            loginRequest.getUsername(),
+            loginRequest.getPassword()
+        );
+        return ResponseEntity.ok(new AuthDtos.JwtResponse(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody AuthDtos.SignupRequest signUpRequest) {
+    public ResponseEntity<String> registerUser(@RequestBody AuthDtos.SignupRequest signUpRequest) {
 
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body("Error: Username is already taken!");

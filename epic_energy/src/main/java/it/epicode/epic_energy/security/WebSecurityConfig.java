@@ -28,12 +28,14 @@ public class WebSecurityConfig {
 
     private final AuthEntryPointJwt unauthorizedHandler;
     private final AuthTokenFilter jwtAuthenticationFilter;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 // Disable CSRF as we're using JWT
                 .csrf(AbstractHttpConfigurer::disable)
+
 
                 // Handle unauthorized attempts
                 .exceptionHandling(exception -> exception
@@ -48,9 +50,13 @@ public class WebSecurityConfig {
                 // Define URL authorization rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/**").permitAll()
                         .anyRequest().authenticated()
                 );
+
+;
+
+
 
         // Add JWT filter before the UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

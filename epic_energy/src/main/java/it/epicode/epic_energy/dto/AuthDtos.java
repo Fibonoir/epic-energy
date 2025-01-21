@@ -1,5 +1,6 @@
 package it.epicode.epic_energy.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -23,20 +24,8 @@ public class AuthDtos {
     }
 
     @Data
+    @AllArgsConstructor
     public static class JwtResponse {
         private String token;
-        private Long id;
-        private String username;
-        private String email;
-        private Collection<? extends GrantedAuthority> roles;
-
-        public JwtResponse(String token, Long id, String username, String email,
-                           Collection<? extends GrantedAuthority> roles) {
-            this.token = token;
-            this.id = id;
-            this.username = username;
-            this.email = email;
-            this.roles = roles;
-        }
     }
 }
