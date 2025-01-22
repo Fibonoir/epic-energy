@@ -66,21 +66,19 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDTO createInvoice(InvoiceCreateDTO invoiceCreateDTO) {
-        // Fetch Client
         Client client = clientRepository.findById(invoiceCreateDTO.getClientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + invoiceCreateDTO.getClientId()));
 
-        // Map DTO to Entity
-        Invoice invoice = modelMapper.map(invoiceCreateDTO, Invoice.class);
+        Invoice invoice = new Invoice();
+        invoice.setDate(invoiceCreateDTO.getDate());
+        invoice.setAmount(invoiceCreateDTO.getAmount());
+        invoice.setInvoiceNumber(invoiceCreateDTO.getInvoiceNumber());
+        invoice.setStatus(invoiceCreateDTO.getStatus());
         invoice.setClient(client);
 
-        // Save Invoice
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
-        InvoiceDTO invoiceDTO = modelMapper.map(savedInvoice, InvoiceDTO.class);
-        invoiceDTO.setClientId(client.getId());
-
-        return invoiceDTO;
+        return modelMapper.map(savedInvoice, InvoiceDTO.class);
     }
 
     @Override
