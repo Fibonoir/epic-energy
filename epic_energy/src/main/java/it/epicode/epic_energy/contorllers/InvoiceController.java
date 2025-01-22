@@ -6,6 +6,8 @@ import it.epicode.epic_energy.dto.InvoiceUpdateDTO;
 import it.epicode.epic_energy.service.InvoiceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+    private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
+
 
     @GetMapping
     public ResponseEntity<Page<InvoiceDTO>> getAllInvoices(
@@ -38,7 +42,9 @@ public class InvoiceController {
 
     @PostMapping
     public ResponseEntity<InvoiceDTO> createInvoice(@Valid @RequestBody InvoiceCreateDTO invoiceCreateDTO) {
+        logger.debug("Received request to create invoice: {}", invoiceCreateDTO.getInvoiceNumber());
         InvoiceDTO createdInvoice = invoiceService.createInvoice(invoiceCreateDTO);
+        logger.debug("Invoice created with ID: {}", createdInvoice.getId());
         return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
     }
 

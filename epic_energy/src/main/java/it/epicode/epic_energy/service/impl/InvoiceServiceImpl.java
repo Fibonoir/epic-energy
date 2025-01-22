@@ -16,9 +16,11 @@ import org.slf4j.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
@@ -48,8 +50,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDTO createInvoice(InvoiceCreateDTO invoiceCreateDTO) {
-        logger.debug("Creating invoice: {}", invoiceCreateDTO.getInvoiceNumber());
-
         // Fetch Client
         Client client = clientRepository.findById(invoiceCreateDTO.getClientId())
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + invoiceCreateDTO.getClientId()));
@@ -60,10 +60,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         // Save Invoice
         Invoice savedInvoice = invoiceRepository.save(invoice);
-        logger.debug("Invoice saved with ID: {}", savedInvoice.getId());
 
+        InvoiceDTO invoiceDTO = modelMapper.map(savedInvoice, InvoiceDTO.class);
+        invoiceDTO.setClientId(client.getId());
 
-        return modelMapper.map(savedInvoice, InvoiceDTO.class);
+        return invoiceDTO;
     }
 
     @Override

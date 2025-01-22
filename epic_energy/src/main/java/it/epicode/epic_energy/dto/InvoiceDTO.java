@@ -3,7 +3,6 @@ package it.epicode.epic_energy.dto;
 import it.epicode.epic_energy.models.InvoiceStatus;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
