@@ -131,8 +131,8 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Province not found with code: " + addressDTO.getProvinceCode()));
 
         // Fetch Municipality
-        Municipality municipality = municipalityRepository.findByName(addressDTO.getMunicipalityName())
-                .orElseThrow(() -> new ResourceNotFoundException("Municipality not found with name: " + addressDTO.getMunicipalityName()));
+        Municipality municipality = municipalityRepository.findByName(addressDTO.getLocality())
+                .orElseThrow(() -> new ResourceNotFoundException("Municipality not found with name: " + addressDTO.getLocality()));
 
         // Ensure Municipality belongs to Province
         if (!municipality.getProvince().getCode().equals(province.getCode())) {

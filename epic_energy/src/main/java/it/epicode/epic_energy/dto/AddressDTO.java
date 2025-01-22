@@ -20,8 +20,5 @@ public class AddressDTO {
     private String postalCode;
 
     @NotBlank
-    private String municipalityName;
-
-    @NotBlank
     private String provinceCode;
 }
