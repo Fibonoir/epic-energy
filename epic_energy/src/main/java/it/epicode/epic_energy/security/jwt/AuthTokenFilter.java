@@ -32,7 +32,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String requestTokenHeader = request.getHeader("Authorization");
-
         String username = null;
         String jwtToken = null;
 
@@ -41,29 +40,28 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             try {
                 username = jwtUtils.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                logger.error("Unable to get JWT Token", e);
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                logger.warn("JWT Token has expired", e);
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
             filterChain.doFilter(request, response);
+            return;
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtils.validateJwtToken(jwtToken, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
 
-
+        filterChain.doFilter(request, response);
     }
-
 }

@@ -24,7 +24,7 @@ public class Client {
     private String vatNumber;
     private String companyEmail;
     private String pecEmail;
-    private String companyType; // e.g. "PA", "SAS", "SPA", "SRL"
+    private CompanyType companyType; // e.g. "PA", "SAS", "SPA", "SRL"
 
     // Contact info
     private String contactPhone;
