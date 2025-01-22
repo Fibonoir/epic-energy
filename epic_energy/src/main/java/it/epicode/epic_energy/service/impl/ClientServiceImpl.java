@@ -23,6 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -33,7 +36,7 @@ public class ClientServiceImpl implements ClientService {
     private final MunicipalityRepository municipalityRepository;
     private final ModelMapper modelMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
 
     @Override
@@ -144,5 +147,53 @@ public class ClientServiceImpl implements ClientService {
         address.setMunicipality(municipality);
         return address;
     }
+
+
+    public Page<ClientDTO> getClients(String queryType, Pageable pageable) {
+        Page<Client> clients = switch (queryType) {
+            case "orderByCompanyName" -> clientRepository.findAllByOrderByCompanyNameAsc(pageable);
+            case "orderByAnnualTurnover" -> clientRepository.findAllByOrderByAnnualTurnoverAsc(pageable);
+            case "orderByContactFirstName" -> clientRepository.findAllByOrderByContactFirstNameAsc(pageable);
+            case "orderByInsertionDate" -> clientRepository.findAllByOrderByInsertionDateAsc(pageable);
+            case "orderByLastContactDate" -> clientRepository.findAllByOrderByLastContactDateAsc(pageable);
+            case "orderByLegalAddressMunicipalityProvinceName" -> clientRepository.findAllByOrderByLegalAddressMunicipalityProvinceNameAsc(pageable);
+            default -> throw new IllegalArgumentException("Invalid query type: " + queryType);
+        };
+        return clients.map(client -> modelMapper.map(client, ClientDTO.class));
+    }
+
+    public Page<ClientDTO> filterClients(String companyName,
+                                         BigDecimal minAnnualTurnover,
+                                         BigDecimal maxAnnualTurnover,
+                                         String contactFirstName,
+                                         String contactLastName,
+                                         Date startInsertionDate,
+                                         Date endInsertionDate,
+                                         Date startLastContactDate,
+                                         Date endLastContactDate,
+                                         Pageable pageable) {
+        Page<Client> clients;
+
+        if (companyName != null && !companyName.isEmpty()) {
+            clients = clientRepository.findByCompanyNameContainingIgnoreCase(companyName, pageable);
+        } else if (minAnnualTurnover != null && maxAnnualTurnover != null) {
+            clients = clientRepository.findByAnnualTurnoverBetween(minAnnualTurnover, maxAnnualTurnover, pageable);
+        } else if (minAnnualTurnover != null) {
+            clients = clientRepository.findByAnnualTurnoverGreaterThanEqual(minAnnualTurnover, pageable);
+        } else if (maxAnnualTurnover != null) {
+            clients = clientRepository.findByAnnualTurnoverLessThanEqual(maxAnnualTurnover, pageable);
+        } else if (contactFirstName != null && contactLastName != null) {
+            clients = clientRepository.findByContactFirstNameContainingIgnoreCaseOrContactLastNameContainingIgnoreCase(contactFirstName, contactLastName, pageable);
+        } else if (startInsertionDate != null && endInsertionDate != null) {
+            clients = clientRepository.findByInsertionDateBetween(startInsertionDate, endInsertionDate, pageable);
+        } else if (startLastContactDate != null && endLastContactDate != null) {
+            clients = clientRepository.findByLastContactDateBetween(startLastContactDate, endLastContactDate, pageable);
+        } else {
+            clients = clientRepository.findAll(pageable);
+        }
+
+        return clients.map(client -> modelMapper.map(client, ClientDTO.class));
+    }
+
 
 }

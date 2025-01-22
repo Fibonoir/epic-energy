@@ -22,4 +22,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     Page<Invoice> findByDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     Page<Invoice> findByAmountBetween(BigDecimal min, BigDecimal max, Pageable pageable);
+
+    Page<Invoice> findByDateYear(int year, Pageable pageable);
 }

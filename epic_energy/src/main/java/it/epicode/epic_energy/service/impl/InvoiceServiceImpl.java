@@ -18,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -27,20 +30,33 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final ClientRepository clientRepository;
     private final ModelMapper modelMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(ExternalDataImportServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(InvoiceServiceImpl.class);
 
     @Override
-    public Page<InvoiceDTO> getAllInvoices(Long clientId, String status, Pageable pageable) {
+    public Page<InvoiceDTO> filterInvoices(
+            Long clientId,
+            String status,
+            LocalDate startDate,
+            LocalDate endDate,
+            BigDecimal minAmount,
+            BigDecimal maxAmount,
+            Integer year,
+            Pageable pageable
+    ) {
         Page<Invoice> invoices;
 
         if (clientId != null && status != null) {
-            InvoiceStatus invoiceStatus = InvoiceStatus.valueOf(status.toUpperCase());
-            invoices = invoiceRepository.findByClientIdAndStatus(clientId, invoiceStatus, pageable);
+            invoices = invoiceRepository.findByClientIdAndStatus(clientId, InvoiceStatus.valueOf(status), pageable);
         } else if (clientId != null) {
             invoices = invoiceRepository.findByClientId(clientId, pageable);
         } else if (status != null) {
-            InvoiceStatus invoiceStatus = InvoiceStatus.valueOf(status.toUpperCase());
-            invoices = invoiceRepository.findByStatus(invoiceStatus, pageable);
+            invoices = invoiceRepository.findByStatus(InvoiceStatus.valueOf(status), pageable);
+        } else if (startDate != null && endDate != null) {
+            invoices = invoiceRepository.findByDateBetween(startDate, endDate, pageable);
+        } else if (minAmount != null && maxAmount != null) {
+            invoices = invoiceRepository.findByAmountBetween(minAmount, maxAmount, pageable);
+        } else if (year != null) {
+            invoices = invoiceRepository.findByDateYear(year, pageable);
         } else {
             invoices = invoiceRepository.findAll(pageable);
         }

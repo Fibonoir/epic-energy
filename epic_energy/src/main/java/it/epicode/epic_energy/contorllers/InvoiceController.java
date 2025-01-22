@@ -3,7 +3,7 @@ package it.epicode.epic_energy.contorllers;
 import it.epicode.epic_energy.dto.InvoiceCreateDTO;
 import it.epicode.epic_energy.dto.InvoiceDTO;
 import it.epicode.epic_energy.dto.InvoiceUpdateDTO;
-import it.epicode.epic_energy.service.InvoiceService;
+import it.epicode.epic_energy.service.impl.InvoiceServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -12,10 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/invoices")
@@ -23,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class InvoiceController {
 
-    private final InvoiceService invoiceService;
+    private final InvoiceServiceImpl invoiceService;
     private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
 
 
@@ -31,20 +35,25 @@ public class InvoiceController {
     public ResponseEntity<Page<InvoiceDTO>> getAllInvoices(
             @RequestParam(required = false) Long clientId,
             @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) BigDecimal minAmount,
+            @RequestParam(required = false) BigDecimal maxAmount,
+            @RequestParam(required = false) Integer year,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "date") String sortBy
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        Page<InvoiceDTO> invoices = invoiceService.getAllInvoices(clientId, status, pageable);
+        Page<InvoiceDTO> invoices = invoiceService.filterInvoices(
+                clientId, status, startDate, endDate, minAmount, maxAmount, year, pageable);
+
         return ResponseEntity.ok(invoices);
     }
 
     @PostMapping
     public ResponseEntity<InvoiceDTO> createInvoice(@Valid @RequestBody InvoiceCreateDTO invoiceCreateDTO) {
-        logger.debug("Received request to create invoice: {}", invoiceCreateDTO.getInvoiceNumber());
         InvoiceDTO createdInvoice = invoiceService.createInvoice(invoiceCreateDTO);
-        logger.debug("Invoice created with ID: {}", createdInvoice.getId());
         return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
     }
 
