@@ -1,7 +1,7 @@
 package it.epicode.epic_energy.contorllers;
 
 import it.epicode.epic_energy.models.User;
-import it.epicode.epic_energy.service.UserService;
+import it.epicode.epic_energy.security.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

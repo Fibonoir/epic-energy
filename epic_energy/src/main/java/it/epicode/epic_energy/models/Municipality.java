@@ -19,8 +19,13 @@ public class Municipality {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String denominazione; // e.g., "Agliè"
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String cap;
 
     @ManyToOne
-    private Province provincia; // Reference to Province
+    @JoinColumn(name = "province_code", nullable = false)
+    private Province province;
 }

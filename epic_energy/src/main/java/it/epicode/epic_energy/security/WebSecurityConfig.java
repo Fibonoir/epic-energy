@@ -49,7 +49,7 @@ public class WebSecurityConfig {
 
                 // Define URL authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/web-postman/**").permitAll()
                         .requestMatchers("/api/auth/**", "/api/**").permitAll()
                         .anyRequest().authenticated()
                 );

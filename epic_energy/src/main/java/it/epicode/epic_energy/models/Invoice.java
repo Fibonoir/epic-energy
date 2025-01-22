@@ -21,13 +21,17 @@ public class Invoice {
     private Long id;
 
     private LocalDate date;
-    private BigDecimal amount;
+
+    @Column(nullable = false)
+    private Double amount;
+
+    @Column(nullable = false, unique = true)
     private String invoiceNumber;
 
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 }

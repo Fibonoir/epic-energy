@@ -1,4 +1,4 @@
-package it.epicode.epic_energy.service;
+package it.epicode.epic_energy.security.service;
 
 
 import it.epicode.epic_energy.exceptions.ResourceNotFoundException;

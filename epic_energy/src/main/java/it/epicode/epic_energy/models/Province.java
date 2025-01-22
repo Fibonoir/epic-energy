@@ -1,5 +1,6 @@
 package it.epicode.epic_energy.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -15,11 +16,11 @@ import lombok.NoArgsConstructor;
 public class Province {
 
     @Id
-    private String sigla; // e.g., "AG"
+    private String code; // e.g., "AG"
 
-    private String nome; // e.g., "Agrigento"
+    @Column(nullable = false)
+    private String name; // e.g., "Agrigento"
 
-    private String regione; // e.g., "Sicilia"
-
-    private String codiceStorico; // e.g., "001"
+    @Column(nullable = false)
+    private String region; // e.g., "Sicilia"
 }

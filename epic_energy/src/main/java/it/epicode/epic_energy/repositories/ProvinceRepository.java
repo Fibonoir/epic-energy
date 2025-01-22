@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProvinceRepository extends JpaRepository<Province, String> {
-    Optional<Province> findByCodiceStorico(String codiceStorico);
+    Optional<Province> findByName(String name);
 
-    Optional<Province> findByNome(String nome);
+    Optional<Province> findByCode(String code);
 }
