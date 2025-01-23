@@ -13,8 +13,9 @@ export class DashboardComponent implements OnInit {
   mood: string = 'reading';
   isAdmin: boolean = false;
   role: string = 'USER';
-name: any;
-surname: any;
+  name: any;
+  surname: any;
+  selectedItem: string = 'dashboard';
 
   constructor(
     private http: HttpClient,

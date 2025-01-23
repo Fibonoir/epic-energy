@@ -1,15 +1,138 @@
 <div class="w-full h-screen flex justify-center items-center bg-zinc-950">
-  <div class="container px-14 py-20 border rounded-md  w-2/4 bg-white">
-    <form class="flex flex-col text-2xl " action="">
+  <div class="max-w-max container px-14 py-10 border rounded-md bg-white">
+    <ul class="flex mb-8 justify-center">
+      <li
+        class="me-4 font-bold italic cursor-pointer hover:text-slate-500 hover:border-slate-500"
+        [ngClass]="{ 'border-b-2': selectedItem === 'Login' }"
+        (click)="selectedItem = 'Login'"
+      >
+        Login
+      </li>
+      <li
+        class="me-4 font-bold italic cursor-pointer hover:text-slate-500 hover:border-slate-500"
+        [ngClass]="{ 'border-b-2': selectedItem === 'Register' }"
+        (click)="selectedItem = 'Register'"
+      >
+        Register
+      </li>
+    </ul>
+    <form
+      *ngIf="selectedItem === 'Login'"
+      class="flex flex-col text-lg"
+      action=""
+    >
       <div class="form-group mb-8">
-        <label for="email" class="font-semibold" >Email</label>
-        <input type="email" placeholder="Insert email" class="form-control text-xl w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2" id="email" name="email" [(ngModel)]="email" required>
+        <label for="email" class="font-semibold">Email</label>
+        <input
+          type="email"
+          placeholder="Insert email"
+          class="form-control text-lg w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+        />
       </div>
       <div class="form-group mb-8">
         <label for="password" class="font-semibold">Password</label>
-        <input type="password" placeholder="Insert password" class="form-control text-xl w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2" id="password" name="password" [(ngModel)]="password" required>
+        <input
+          type="password"
+          placeholder="Insert password"
+          class="form-control text-lg w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+        />
       </div>
-      <button type="submit" class="btn btn-primary bg-yellow-400 py-2 rounded-sm hover:animate-pulse text-black text-lg font-bold" (click)="login()">LOGIN</button>
+      <button
+        type="submit"
+        class="btn btn-primary bg-yellow-400 py-2 rounded-sm hover:animate-pulse text-black text-lg font-bold"
+        (click)="login()"
+      >
+        LOGIN
+      </button>
+    </form>
+
+    <form
+      *ngIf="selectedItem === 'Register'"
+      class="flex flex-col text-lg"
+      action=""
+    >
+      <div class="form-group mb-4">
+        <label for="username" class="font-semibold">Username</label>
+        <input
+          type="text"
+          placeholder="Insert username"
+          class="form-control text-lg w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2"
+          id="username"
+          name="username"
+          [(ngModel)]="username"
+          required
+        />
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="email" class="font-semibold">Email</label>
+        <input
+          type="email"
+          placeholder="Insert email"
+          class="form-control text-lg w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+        />
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="password" class="font-semibold">Password</label>
+        <input
+          type="password"
+          placeholder="Insert password"
+          class="form-control text-lg w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+        />
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="terms" class="font-semibold">
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms"
+            [(ngModel)]="isAdmin"
+            required
+          />
+          Register as admin ?
+        </label>
+      </div>
+
+
+
+      <div *ngIf="isAdmin" class="form-group mb-4">
+        <label for="adminKey" class="font-semibold">Admin Key</label>
+        <input
+          type="text"
+          placeholder="Insert admin key"
+          class="form-control text-lg w-full bg-slate-100 my-2 p-2 border-1 border-black rounded-md focus-within:border-2"
+          id="adminKey"
+          name="adminKey"
+          [(ngModel)]="adminKey"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary bg-yellow-400 py-2 rounded-sm hover:animate-pulse text-black text-lg font-bold"
+        (click)="register()"
+      >
+        SUBMIT
+      </button>
     </form>
   </div>
 </div>
