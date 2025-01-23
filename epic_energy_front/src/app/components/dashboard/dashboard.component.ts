@@ -12,7 +12,9 @@ export class DashboardComponent implements OnInit {
   clients: ResponseBody | null = null;
   mood: string = 'reading';
   isAdmin: boolean = false;
-
+  role: string = 'USER';
+name: any;
+surname: any;
 
   constructor(
     private http: HttpClient,
@@ -21,7 +23,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRoleFromToken();
-
   }
 
   fetchAllClients() {
@@ -48,6 +49,7 @@ export class DashboardComponent implements OnInit {
       const roles = payload.roles.map((role: string) => role.toLowerCase());
       if (roles.some((role: string) => role.includes('admin'))) {
         this.isAdmin = true;
+        this.role = 'ADMIN';
       }
       console.log(roles);
       return payload.role || null;

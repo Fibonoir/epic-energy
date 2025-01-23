@@ -1,13 +1,36 @@
 <div class="flex flex-col md:grid w-full h-screen grid-cols-5">
-  <div class="h-20 md:h-full md:col-span-1 bg-zinc-950">
-    <img src="" alt="">
+  <div class="md:h-full md:col-span-1 bg-zinc-950">
+    <div class="flex md:flex-col md:items-center p-4 md:pt-8 h-full">
+      <img
+        src="https://m.media-amazon.com/images/M/MV5BYTFhMzcxODktMDc0Zi00M2ZmLTk2YzEtODczYjA3NmNiNDhkXkEyXkFqcGc@._V1_.jpg"
+        alt="avatar"
+        class="w-16 h-16 md:w-20 md:h-20 rounded-full"
+      />
+
+      <div class="ps-6">
+        <h1 class="text-white text-2xl font-bold">Useranme</h1>
+        <h1 class="text-white text-2xl font-bold">{{ role }}</h1>
+      </div>
+
+      <div class="text-white">
+        <button>Clients</button>
+        <button>Invoices</button></div>
+    </div>
   </div>
-  <div class="h-full md:col-span-4 m-8 p-6 border-2 rounded-lg ">
+  <div class="sm:h-full md:h-auto md:col-span-4 m-8 p-6 border-2 rounded-lg">
     <ul class="flex m-4 w-full justify-around">
-      <button *ngIf="isAdmin" class="bg-sky-500 rounded p-2" (click)="mood = 'creating'">Create client</button>
-      <button class="bg-sky-500 rounded p-2" (click)="mood = 'reading'">Show Client</button>
+      <button
+        *ngIf="isAdmin"
+        class="bg-sky-500 rounded p-2"
+        (click)="mood = 'creating'"
+      >
+        Create client
+      </button>
+      <button class="bg-sky-500 rounded p-2" (click)="mood = 'reading'">
+        Show Client
+      </button>
     </ul>
-    <form *ngIf="mood ==='creating' && isAdmin" class="flex flex-col">
+    <form *ngIf="mood === 'creating' && isAdmin" class="flex flex-col">
       <div class="grid grid-cols-4 gap-4">
         <div>
           <label class="block text-white">Company Name</label>
@@ -132,7 +155,11 @@
         Register Client
       </button>
     </form>
-    <button *ngIf="mood === 'reading'" (click)="fetchAllClients()" class="bg-sky-500 font-bold p-5">
+    <button
+      *ngIf="mood === 'reading'"
+      (click)="fetchAllClients()"
+      class="bg-sky-500 font-bold p-5"
+    >
       GET CLIENTS
     </button>
   </div>
