@@ -64,19 +64,32 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
+
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    public String authenticateUser(String username, String password) {
+
+    public String authenticateUser(String identifier, String password) {
         try {
+            // Resolve username by identifier (username or email)
+            String username = userRepository.findByUsername(identifier)
+                    .map(User::getUsername)
+                    .orElseGet(() -> userRepository.findByEmail(identifier)
+                            .map(User::getUsername)
+                            .orElseThrow(() -> new SecurityException("User not found with username or email: " + identifier))
+                    );
+
+            // Authenticate the user
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
+            // Generate JWT token
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             return jwtUtils.generateJwtToken(userDetails);
         } catch (AuthenticationException e) {
-            throw new SecurityException("Credenziali non valide", e);
+            throw new SecurityException("Invalid credentials", e);
         }
     }
+
 }

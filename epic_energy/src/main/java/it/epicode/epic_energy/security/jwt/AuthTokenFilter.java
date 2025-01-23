@@ -42,6 +42,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             "/static/**",
             "/public/**",
             "/resources/**"
+
     );
 
     private PathMatcher pathMatcher = new AntPathMatcher();
