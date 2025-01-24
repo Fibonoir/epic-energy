@@ -1,18 +1,56 @@
 <div
+  *ngIf="!loading"
   class="flex flex-col md:grid w-full min-h-screen grid-cols-5 p-6 bg-indigo-400"
 >
   <div class="md:h-full md:col-span-1 bg-zinc-950 rounded-lg">
     <div class="flex md:flex-col md:items-start p-4 h-full">
       <div class="flex h-full w-1/2 md:flex-col items-center md:h-80 md:w-full">
+        <!-- dashboard.component.html -->
+
+        <!-- Small avatar in the dashboard header -->
         <img
-          src="https://m.media-amazon.com/images/M/MV5BYTFhMzcxODktMDc0Zi00M2ZmLTk2YzEtODczYjA3NmNiNDhkXkEyXkFqcGc@._V1_.jpg"
-          alt="avatar"
-          class="w-16 h-16 md:w-20 md:h-20 rounded-full"
+          [src]="profilePictureUrl || defaultImageUrl"
+          alt="Profile Picture"
+          (click)="openModal()"
+          class="w-16 h-16 md:w-20 md:h-20 rounded-full cursor-pointer object-cover"
         />
 
+        <!-- Profile info, e.g. username and role -->
         <div class="ps-6 md:ps-0 md:pt-4">
-          <h1 class="text-white text-2xl font-bold">Useranme</h1>
+          <h1 class="text-white text-2xl font-bold">{{ username }}</h1>
           <h1 class="text-center text-slate-500 font-bold">{{ role }}</h1>
+        </div>
+
+        <!-- Modal for the bigger version of the picture -->
+        <div
+          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          *ngIf="showModal"
+          (click)="closeModal()"
+        >
+          <div
+            (click)="$event.stopPropagation()"
+            class="bg-white rounded-lg p-4 relative"
+          >
+            <!-- Close button -->
+            <button
+              class="absolute top-2 right-2 text-gray-700 hover:text-gray-900"
+              (click)="closeModal()"
+            >
+              ✖️
+            </button>
+
+            <!-- Large image preview -->
+            <img
+              [src]="profilePictureUrl || defaultImageUrl"
+              alt="Profile Picture"
+              class="w-64 h-64 rounded-full object-cover mx-auto"
+            />
+
+            <!-- File input and Upload button -->
+            <div class="mt-4">
+              <input type="file" (change)="onFileSelected($event, user.id)" />
+            </div>
+          </div>
         </div>
       </div>
 
