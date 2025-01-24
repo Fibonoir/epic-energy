@@ -6,9 +6,10 @@ import { ClientServiceService } from '../../services/client-service.service';
 import { environment } from '../../../environments/environment.development';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css',
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
   apiUrl = environment.apiUrl;
