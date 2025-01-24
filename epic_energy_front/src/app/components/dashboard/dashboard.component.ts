@@ -4,9 +4,10 @@ import { ResponseBody } from '../../interfaces/all-clients-response';
 import { ClientServiceService } from '../../services/client-service.service';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css',
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
   clients: ResponseBody | null = null;
