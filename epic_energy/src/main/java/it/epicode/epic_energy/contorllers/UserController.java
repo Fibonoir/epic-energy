@@ -1,13 +1,15 @@
 package it.epicode.epic_energy.contorllers;
 
+import it.epicode.epic_energy.models.ProfilePicture;
 import it.epicode.epic_energy.models.User;
 import it.epicode.epic_energy.security.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,5 +24,30 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // Additional user administration endpoints could be added here
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
+
+    @PostMapping(value = "/{id}/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadProfilePicture(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        userService.uploadProfilePicture(id, file);
+        return ResponseEntity.ok( ).build();
+    }
+
+    @GetMapping("/{id}/profile-picture")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) {
+        ProfilePicture imageData = userService.getProfilePicture(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(imageData.getContentType()))
+                .body(imageData.getData());
+    }
+
+    @DeleteMapping("/{id}/profile-picture")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProfilePicture(@PathVariable Long id) {
+        userService.deleteProfilePicture(id);
+    }
 }

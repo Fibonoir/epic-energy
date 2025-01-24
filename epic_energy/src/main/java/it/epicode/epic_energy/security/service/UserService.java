@@ -3,8 +3,10 @@ package it.epicode.epic_energy.security.service;
 
 import it.epicode.epic_energy.exceptions.ResourceNotFoundException;
 import it.epicode.epic_energy.models.ERole;
+import it.epicode.epic_energy.models.ProfilePicture;
 import it.epicode.epic_energy.models.Role;
 import it.epicode.epic_energy.models.User;
+import it.epicode.epic_energy.repositories.ProfilePictureRepository;
 import it.epicode.epic_energy.repositories.RoleRepository;
 import it.epicode.epic_energy.repositories.UserRepository;
 import it.epicode.epic_energy.security.jwt.JwtUtils;
@@ -16,7 +18,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +34,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final ProfilePictureRepository profilePictureRepository;
 
     public User registerUser(String username, String email, String rawPassword, String role, String adminKey) {
 
@@ -92,4 +97,35 @@ public class UserService {
         }
     }
 
+    public void uploadProfilePicture(Long userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        try {
+            ProfilePicture profilePicture = profilePictureRepository.findByUserId(userId)
+                    .orElse(new ProfilePicture());
+
+            profilePicture.setUser(user);
+            profilePicture.setContentType(file.getContentType());
+            profilePicture.setData(file.getBytes());
+
+            profilePictureRepository.save(profilePicture);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not upload profile picture", e);
+        }
+    }
+
+    public ProfilePicture getProfilePicture(Long userId) {
+        return profilePictureRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No profile picture found for employee " + userId));
+    }
+
+    public void deleteProfilePicture(Long userId) {
+        profilePictureRepository.findByUserId(userId).ifPresent(profilePictureRepository::delete);
+    }
+
+    public void deleteUser(Long id) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        userRepository.delete(existingUser);
+    }
 }
