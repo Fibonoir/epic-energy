@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { iInvoices } from './../../interfaces/invoices';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ResponseBody } from '../../interfaces/all-clients-response';
 import { ClientServiceService } from '../../services/client-service.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,6 +11,7 @@ import { ClientServiceService } from '../../services/client-service.service';
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
+  apiUrl = environment.apiUrl;
   clients: ResponseBody | null = null;
   mood: string = 'reading';
   isAdmin: boolean = false;
@@ -16,6 +19,16 @@ export class DashboardComponent implements OnInit {
   name: any;
   surname: any;
   selectedItem: string = 'dashboard';
+
+  //attributi fattura
+
+  invoice: iInvoices = {
+    date: new Date(),
+    amount: 0,
+    invoiceNumber: '',
+    status: 'PENDING',
+    clientId: 0,
+  };
 
   constructor(
     private http: HttpClient,
@@ -58,5 +71,27 @@ export class DashboardComponent implements OnInit {
       console.error('Error parsing token', error);
       return null;
     }
+  }
+
+  createInvoices() {
+    const token = localStorage.getItem('token');
+    this.getRoleFromToken();
+
+    console.log('Invoice Number:', this.invoice.invoiceNumber);
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http
+      .post<iInvoices>(this.apiUrl + '/invoices', this.invoice, { headers })
+      .subscribe(
+        (response) => {
+          alert('Fattura creata con successo!');
+          this.mood = 'reading';
+          console.log('Fattura creata:', response);
+        },
+        (error) => {
+          console.error(error);
+          alert('Errore durante la creazione della fattura.');
+        }
+      );
   }
 }
