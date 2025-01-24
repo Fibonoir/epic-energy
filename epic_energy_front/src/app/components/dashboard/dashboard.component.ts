@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ResponseBody } from '../../interfaces/all-clients-response';
 import { ClientServiceService } from '../../services/client-service.service';
-import { environment } from '../../../environments/environment.development';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -21,8 +21,6 @@ export class DashboardComponent implements OnInit {
   surname: any;
   selectedItem: string = 'dashboard';
 
-  //attributi fattura
-
   invoice: iInvoices = {
     date: new Date(),
     amount: 0,
@@ -33,7 +31,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private clientService: ClientServiceService
+    private clientService: ClientServiceService,
+    private authService: AuthServiceService
   ) {}
 
   ngOnInit(): void {
@@ -53,7 +52,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getRoleFromToken(): string | null {
-    const token = localStorage.getItem('token');
+    const token = this.authService.getToken();
     if (!token) {
       return null;
     }

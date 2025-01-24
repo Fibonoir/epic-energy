@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { UserRegistration } from '../../interfaces/user-interfaces';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 interface Response {
   token: string;
@@ -26,10 +27,9 @@ export class LoginComponent {
   role: string = 'user';
   adminKey: string = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private authService: AuthServiceService) {}
 
   login() {
-
     this.http
       .post<Response>(this.apiUrl + '/auth/login', {
         username: this.email,
@@ -40,7 +40,11 @@ export class LoginComponent {
           console.log('Login failed');
           return;
         }
-        localStorage.setItem('token', response.token);
+
+        // Save the token using AuthService
+        this.authService.setToken(response.token);
+
+        // Navigate to dashboard
         this.router.navigate(['/dashboard']);
       });
   }
