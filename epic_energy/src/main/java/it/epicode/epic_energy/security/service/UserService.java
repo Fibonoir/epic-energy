@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -70,8 +71,9 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
     }
 
     public String authenticateUser(String identifier, String password) {
@@ -97,6 +99,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void uploadProfilePicture(Long userId, MultipartFile file) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
@@ -114,6 +117,7 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     public ProfilePicture getProfilePicture(Long userId) {
         return profilePictureRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("No profile picture found for employee " + userId));

@@ -19,8 +19,10 @@ public class ProfilePicture {
     private Long id;
 
     @Lob
+    @Column(name = "profile_picture", nullable = true)
     private byte[] data;
 
+    @Column(name = "content_type", nullable = true)
     private String contentType;
 
     @OneToOne
