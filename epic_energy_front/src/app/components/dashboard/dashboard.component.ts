@@ -29,12 +29,13 @@ export class DashboardComponent implements OnInit {
   surname: any;
   selectedItem: string = 'dashboard';
 
- // Profile Picture Handling
- profilePictureUrl: string | ArrayBuffer | null = null; // URL for <img src=...>
- defaultImageUrl: string = 'https://images.immediate.co.uk/production/volatile/sites/3/2024/08/squid-game-season-2-b7cbb06.jpg';
- uploadFile: File | null = null; // stores user-selected file from <input type="file">
+  // Profile Picture Handling
+  profilePictureUrl: string | ArrayBuffer | null = null; // URL for <img src=...>
+  defaultImageUrl: string =
+    'https://images.immediate.co.uk/production/volatile/sites/3/2024/08/squid-game-season-2-b7cbb06.jpg';
+  uploadFile: File | null = null; // stores user-selected file from <input type="file">
 
- showModal: boolean = false;
+  showModal: boolean = false;
 
   invoice: iInvoices = {
     date: new Date(),
@@ -54,7 +55,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getRoleFromToken();
     this.getUserDataFromToken();
-
   }
 
   fetchUser(username: string) {
@@ -63,7 +63,6 @@ export class DashboardComponent implements OnInit {
         this.user = response;
         console.log(response);
         this.loadProfilePicture(response.id);
-
       },
       error: (error) => {
         console.log('Error' + error);
@@ -146,14 +145,13 @@ export class DashboardComponent implements OnInit {
       );
   }
 
-   // 1. Load the profile picture from backend
-   loadProfilePicture(userId: number): void {
+  // 1. Load the profile picture from backend
+  loadProfilePicture(userId: number): void {
     this.userService.getProfilePicture(userId).subscribe({
       next: (blob: Blob) => {
         // Convert the blob to a local object URL for display
         this.profilePictureUrl = URL.createObjectURL(blob);
         this.loading = false;
-
       },
       error: (error) => {
         // If the user has no profile pic or something went wrong,
@@ -181,24 +179,21 @@ export class DashboardComponent implements OnInit {
     if (file) {
       this.uploadFile = file;
       const reader = new FileReader();
-      reader.onload = e => this.profilePictureUrl = reader.result;
+      reader.onload = (e) => (this.profilePictureUrl = reader.result);
       reader.readAsDataURL(file);
 
       if (!this.user || !this.user.id || !this.uploadFile) return;
 
       // 1. Upload to backend
-      this.userService
-        .uploadProfilePicture(userId, this.uploadFile)
-        .subscribe({
-          next: () => {
-            console.log('Picture uploaded successfully!');
-            this.closeModal()
-          },
-          error: (error) => {
-            console.error('Error uploading picture:', error);
-          },
-        });
+      this.userService.uploadProfilePicture(userId, this.uploadFile).subscribe({
+        next: () => {
+          console.log('Picture uploaded successfully!');
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error uploading picture:', error);
+        },
+      });
     }
   }
-
 }
