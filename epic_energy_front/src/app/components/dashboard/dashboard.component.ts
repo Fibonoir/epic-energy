@@ -5,6 +5,7 @@ import { ResponseBody } from '../../interfaces/all-clients-response';
 import { ClientServiceService } from '../../services/client-service.service';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { environment } from '../../../environments/environment.development';
+import { InvoiceServiceService } from '../../services/invoice-service.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,15 +29,19 @@ export class DashboardComponent implements OnInit {
     invoiceNumber: '',
     status: 'PENDING',
     clientId: 0,
+    id: 0,
   };
 
   companyNames: string[] = [];
   clientsLoaded = false;
 
+  invoices: iInvoices[] = [];
+
   constructor(
     private http: HttpClient,
     private clientService: ClientServiceService,
-    private authService: AuthServiceService
+    private authService: AuthServiceService,
+    private invoiceService: InvoiceServiceService
   ) {}
 
   ngOnInit(): void {
@@ -106,5 +111,34 @@ export class DashboardComponent implements OnInit {
           alert('Errore durante la creazione della fattura.');
         }
       );
+  }
+
+  fetchAllInvoices() {
+    this.invoiceService.getAllInvoices().subscribe(
+      (invoices) => {
+        this.invoices = invoices;
+        console.log('Fatture recuperate:', this.invoices);
+      },
+      (error) => {
+        console.error('Errore durante il recupero delle fatture:', error);
+        alert('Errore durante il recupero delle fatture.');
+      }
+    );
+  }
+
+  deleteInvoice(id: number) {
+    this.invoiceService.deleteInvoiceById(id).subscribe(
+      () => {
+        this.invoices = this.invoices.filter((invoice) => invoice.id !== id);
+        console.log(`Fattura con ID ${id} eliminata con successo.`);
+      },
+      (error) => {
+        console.error(
+          `Errore durante l'eliminazione della fattura con ID ${id}:`,
+          error
+        );
+        alert("Errore durante l'eliminazione della fattura.");
+      }
+    );
   }
 }

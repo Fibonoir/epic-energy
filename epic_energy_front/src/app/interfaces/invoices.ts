@@ -1,4 +1,5 @@
 export interface iInvoices {
+  id: number;
   date: Date;
   amount: number;
   invoiceNumber: string;

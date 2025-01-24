@@ -293,6 +293,42 @@
       >
         Nessuna azienda trovata.
       </p>
+      <button
+        (click)="fetchAllInvoices()"
+        class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200"
+      >
+        GET INVOICES
+      </button>
+
+      <ul
+        *ngIf="mood === 'reading' && invoices.length > 0"
+        class="w-full p-6 bg-white rounded-lg shadow-lg"
+      >
+        <li
+          *ngFor="let invoice of invoices"
+          class="flex flex-col md:flex-row justify-between items-center p-4 mb-4 bg-indigo-300 rounded-lg shadow-md hover:shadow-lg transition duration-200"
+        >
+          <div class="text-white">
+            <p><strong>ID:</strong>{{ invoice.id }}</p>
+            <p><strong>Data:</strong> {{ invoice.date | date }}</p>
+            <p><strong>Importo:</strong> €{{ invoice.amount }}</p>
+            <p><strong>Numero Fattura:</strong> {{ invoice.invoiceNumber }}</p>
+            <p><strong>Stato:</strong> {{ invoice.status }}</p>
+          </div>
+          <button
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
+            (click)="deleteInvoice(invoice.id)"
+          >
+            Elimina
+          </button>
+        </li>
+      </ul>
+      <p
+        *ngIf="mood === 'reading' && invoices.length === 0"
+        class="text-center text-white font-bold bg-indigo-500 p-4 rounded-lg"
+      >
+        Nessuna fattura trovata.
+      </p>
     </div>
   </div>
 </div>
