@@ -4,12 +4,13 @@ import { Component, OnInit } from '@angular/core';
 import { ResponseBody } from '../../interfaces/all-clients-response';
 import { ClientServiceService } from '../../services/client-service.service';
 import { AuthServiceService } from '../../services/auth-service.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrl: './dashboard.component.css',
-    standalone: false
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
+  standalone: false,
 })
 export class DashboardComponent implements OnInit {
   apiUrl = environment.apiUrl;
@@ -29,6 +30,9 @@ export class DashboardComponent implements OnInit {
     clientId: 0,
   };
 
+  companyNames: string[] = [];
+  clientsLoaded = false;
+
   constructor(
     private http: HttpClient,
     private clientService: ClientServiceService,
@@ -40,15 +44,24 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchAllClients() {
-    this.clientService.getAllClients().subscribe({
-      next: (response: ResponseBody) => {
-        this.clients = response;
-        console.log(this.clients);
-      },
-      error: (error) => {
-        console.log('Error' + error);
-      },
-    });
+    if (this.clientsLoaded) {
+      this.clientsLoaded = false;
+      this.companyNames = [];
+    } else {
+      this.clientService.getAllClients().subscribe(
+        (response) => {
+          this.companyNames = response.content.map(
+            (client) => client.companyName
+          );
+          this.clientsLoaded = true;
+          console.log('Nomi delle aziende:', this.companyNames);
+        },
+        (error) => {
+          console.error('Errore durante il recupero delle aziende:', error);
+          alert('Errore durante il recupero delle aziende.');
+        }
+      );
+    }
   }
 
   getRoleFromToken(): string | null {

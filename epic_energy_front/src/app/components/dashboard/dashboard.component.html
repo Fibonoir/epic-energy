@@ -266,13 +266,33 @@
           Register Invoice
         </button>
       </form>
-      <button
-        *ngIf="mood === 'reading'"
-        (click)="fetchAllClients()"
-        class="bg-sky-500 font-bold p-5"
+      <div *ngIf="mood === 'reading'" class="text-center">
+        <button
+          (click)="fetchAllClients()"
+          class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200"
+        >
+          GET CLIENTS
+        </button>
+      </div>
+
+      <ul
+        *ngIf="clientsLoaded && companyNames.length > 0"
+        class="w-full p-6 bg-white rounded-lg shadow-lg mt-6"
       >
-        GET CLIENTS
-      </button>
+        <li
+          *ngFor="let name of companyNames"
+          class="p-4 mb-4 bg-indigo-300 rounded-lg shadow-md hover:shadow-lg transition duration-200 text-white"
+        >
+          {{ name }}
+        </li>
+      </ul>
+
+      <p
+        *ngIf="clientsLoaded && companyNames.length === 0"
+        class="text-center text-white font-bold bg-indigo-500 p-4 rounded-lg"
+      >
+        Nessuna azienda trovata.
+      </p>
     </div>
   </div>
 </div>
